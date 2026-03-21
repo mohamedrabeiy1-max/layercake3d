@@ -1,0 +1,981 @@
+import React, { useState, useEffect, useRef } from 'react';
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>LayerCake 3D | Precision Tectonics</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/STLLoader.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#131313",
+                        "inverse-surface": "#e5e2e1",
+                        "on-primary": "#00363d",
+                        "on-tertiary-fixed": "#251a00",
+                        "surface": "#131313",
+                        "surface-container": "#201f1f",
+                        "error-container": "#93000a",
+                        "secondary-container": "#374c56",
+                        "surface-variant": "#353534",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-container": "#fec931",
+                        "on-secondary-fixed-variant": "#354a53",
+                        "on-primary-container": "#00626e",
+                        "surface-tint": "#00daf3",
+                        "tertiary-fixed": "#ffdf96",
+                        "on-tertiary-container": "#6f5500",
+                        "on-primary-fixed-variant": "#004f58",
+                        "tertiary-fixed-dim": "#f3bf26",
+                        "on-error": "#690005",
+                        "on-primary-fixed": "#001f24",
+                        "on-secondary": "#1e333c",
+                        "on-surface": "#e5e2e1",
+                        "primary": "#c3f5ff",
+                        "inverse-on-surface": "#313030",
+                        "surface-container-low": "#1c1b1b",
+                        "inverse-primary": "#006875",
+                        "outline-variant": "#3b494c",
+                        "outline": "#849396",
+                        "primary-fixed-dim": "#00daf3",
+                        "on-tertiary": "#3e2e00",
+                        "primary-fixed": "#9cf0ff",
+                        "on-secondary-container": "#a6bcc7",
+                        "secondary": "#b4cad6",
+                        "tertiary": "#ffeac0",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#131313",
+                        "on-background": "#e5e2e1",
+                        "on-surface-variant": "#bac9cc",
+                        "surface-container-highest": "#353534",
+                        "secondary-fixed-dim": "#b4cad6",
+                        "surface-bright": "#393939",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "primary-container": "#00e5ff",
+                        "secondary-fixed": "#cfe6f2",
+                        "on-secondary-fixed": "#071e27",
+                        "surface-container-lowest": "#0e0e0e",
+                        "error": "#ffb4ab"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(53, 53, 52, 0.6);
+            backdrop-filter: blur(24px);
+        }
+        .filament-line {
+            height: 2px;
+            background: linear-gradient(90deg, #00e5ff, transparent);
+        }
+        .filament-progress {
+            background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+            background-size: 200% 100%;
+        }
+        input[type="range"] { -webkit-appearance: none; background: transparent; }
+        input[type="range"]::-webkit-slider-runnable-track { background: #1c1b1b; height: 4px; border-radius: 2px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #00e5ff; margin-top: -6px; cursor: pointer; box-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        .placeholder-pattern {
+            background-image: radial-gradient(circle at 2px 2px, rgba(195, 245, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        const LOGO_URL = "https://lh3.googleusercontent.com/aida/ADBb0uiM87cS-7jG2T8Mcg1cPpWxoRsCIZkxyB4QMIWq5VFUGJ4cIA5IcsQshYGyDU-jlWnEVH3lZ2lqxkVAAG5Hbj-Eb1ZKSVyPz86QvRI60FeYjXCQuWQZpMfH-881OC9sk0Bh22rnVDkJ5AqlF2IIXtuh1wVFSsuwWYChhkAtPn0iDMZA7tDP3HVy-ohVT4Ywp1o_ohFwi9cwpndLoaRSD47t52Hb9WXjHnDtmBKjKzCl75BlRks5t_MAH8oyolu3vslKGRnNhdn5";
+
+        const Navbar = () => {
+            const location = useLocation();
+            const navigate = useNavigate();
+     const navLinks = [
+                { name: 'Home', path: '/' },
+                { name: 'STL Calculator', path: '/calculator' },
+                { name: 'Products', path: '/products' },
+                { name: 'Services', path: '/services' },
+                { name: 'Portfolio', path: '/portfolio' },
+                { name: 'About Us', path: '/about' },
+                { name: 'Contact', path: '/contact' },
+            ];
+
+            return (
+                <nav className="fixed top-0 w-full z-50 bg-[#131313] shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+                    <div className="flex justify-between items-center h-20 px-8 max-w-full mx-auto">
+                        <Link to="/" className="flex items-center gap-3">
+                            <img alt="LayerCake 3D Logo" className="h-10 w-auto" src={LOGO_URL} />
+                            <span className="text-2xl font-bold tracking-tight text-[#00E5FF] font-['Space_Grotesk']">LayerCake 3D</span>
+                        </Link>
+                        <div className="hidden md:flex items-center space-x-8">
+                            {navLinks.map((link) => (
+                                <Link 
+                                    key={link.path}
+                                    to={link.path}
+                                    className={`font-medium transition-colors ${location.pathname === link.path ? 'text-[#c3f5ff] border-b-2 border-[#00E5FF] pb-1' : 'text-zinc-400 hover:text-[#00E5FF]'}`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                        <button 
+                            onClick={() => navigate('/contact')}
+                            className="bg-[#c3f5ff] text-[#00363d] px-6 py-2.5 rounded-lg font-semibold hover:scale-95 transition-all duration-150 ease-in-out"
+                        >
+                            Request a Quote
+                        </button>
+                    </div>
+                </nav>
+            );
+        };
+
+        const Footer = () => {
+            const navigate = useNavigate();
+            return (
+                <footer className="w-full border-t border-[#3b494c]/15 bg-[#131313]">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-16 max-w-7xl mx-auto">
+                        <div className="col-span-1 md:col-span-1">
+                            <div className="flex items-center gap-3 mb-6">
+                                <img alt="LayerCake 3D Logo" className="h-8 w-auto" src={LOGO_URL} />
+                                <div className="text-xl font-bold text-[#00E5FF] font-['Space_Grotesk']">LayerCake 3D</div>
+                            </div>
+                            <p className="text-zinc-500 text-sm leading-relaxed">Precision Tectonics applied to every layer. Industrial additive manufacturing solutions.</p>
+                        </div>
+                        <div>
+                            <h4 className="text-on-surface font-bold text-sm mb-6 uppercase tracking-widest">Printing</h4>
+                            <ul className="space-y-3">
+                                <li><Link to="/services" className="text-zinc-500 hover:text-white transition-colors text-sm">FDM Printing</Link></li>
+                                <li><Link to="/services" className="text-zinc-500 hover:text-white transition-colors text-sm">Design Consultation</Link></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 className="text-on-surface font-bold text-sm mb-6 uppercase tracking-widest">Materials</h4>
+                            <div className="grid grid-cols-2 gap-3">
+                                <span className="text-zinc-500 text-sm">PLA+</span>
+                                <span className="text-zinc-500 text-sm">PETG</span>
+                                <span className="text-zinc-500 text-sm">TPU</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-on-surface font-bold text-sm mb-6 uppercase tracking-widest">Support</h4>
+                            <ul className="space-y-3">
+                                <li><Link to="/contact" className="text-zinc-500 hover:text-white transition-colors text-sm">Contact</Link></li>
+                                <li><Link to="/calculator" className="text-zinc-500 hover:text-white transition-colors text-sm">STL Calculator</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="px-12 py-8 max-w-7xl mx-auto border-t border-[#3b494c]/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p className="text-zinc-500 text-sm">© 2024 LayerCake 3D. Precision Tectonics Applied.</p>
+                        <div className="flex gap-6">
+                            <span className="material-symbols-outlined text-zinc-500 cursor-pointer hover:text-primary transition-colors">share</span>
+                            <span className="material-symbols-outlined text-zinc-500 cursor-pointer hover:text-primary transition-colors">hub</span>
+                            <span className="material-symbols-outlined text-zinc-500 cursor-pointer hover:text-primary transition-colors">biotech</span>
+                        </div>
+                    </div>
+                </footer>
+            );
+        };
+
+        const HomePage = () => {
+            const navigate = useNavigate();
+            return (
+                <main className="pt-20">
+                    <section className="relative min-h-[921px] flex items-center overflow-hidden">
+                        <div className="absolute inset-0 z-0">
+                            <img alt="Modern 3D Printer" className="w-full h-full object-cover opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDM9X6n4mcEMfZvZj6gyDFyz4W_fWDkvXy3b_U3ajq9N77SjYnGuCJY-p9mBTKsUoW-hs884NcADscUXWPEg1DLnoA_2T39f3lcCbR8JjkQ_J584g-wa8V1a0Nm0g0b92-GVrOCkK_QjHv03_TjeTJPkCRo83JhRP0vyMblMoJFouz-cHbbUvLutPhbGo99c-ouCoBq9Y6zK-wlpHUb_yq-hUjwlhXKA4PZ3S5pYzhgEO1Sk6D6u2FcqN35y72SzZY0F6APEa9Hpw" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+                        </div>
+                        <div className="container mx-auto px-8 relative z-10">
+                            <div className="max-w-4xl">
+                                <span className="inline-block px-4 py-1 mb-6 rounded-full bg-secondary-container text-on-secondary-container text-sm font-medium tracking-wider uppercase">Precision Tectonics</span>
+                                <h1 className="font-headline text-[3.5rem] md:text-[5rem] leading-[1] font-bold tracking-tighter text-on-surface mb-6">
+                                    Precision 3d Printing.<br />
+                                    <span className="text-primary">Layers of Innovation.</span>
+                                </h1>
+                                <p className="text-xl md:text-2xl text-on-surface-variant font-light max-w-2xl mb-10 leading-relaxed">
+                                    LayerCake 3D: Your partner in turning concepts into high-quality physical objects with engineered density and industrial accuracy.
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <button onClick={() => navigate('/calculator')} className="px-8 py-4 bg-primary text-on-primary rounded-lg font-bold text-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 group">
+                                        Get an Instant Quote
+                                        <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                    </button>
+                                    <button onClick={() => navigate('/portfolio')} className="px-8 py-4 bg-surface-container-high text-primary rounded-lg font-bold text-lg hover:bg-surface-container-highest transition-all">
+                                        View Portfolio
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className="py-12 bg-surface-container-low">
+                        <div className="container mx-auto px-8">
+                            <p className="text-center text-sm font-bold uppercase tracking-[0.2em] text-outline mb-8">WORKING FOR MAKE YOU HAPPY</p>
+                            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+                                <div className="h-8 w-32 bg-on-surface/20 rounded-md flex items-center justify-center font-headline font-black italic">SPEED</div>
+                                <div className="h-8 w-32 bg-on-surface/20 rounded-md flex items-center justify-center font-headline font-black italic">QUALITY</div>
+                                <div className="h-8 w-32 bg-on-surface/20 rounded-md flex items-center justify-center font-headline font-black italic">MODELING</div>
+                                <div className="h-8 w-32 bg-on-surface/20 rounded-md flex items-center justify-center font-headline font-black italic">DELIVERY</div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className="py-24 relative overflow-hidden">
+                        <div className="container mx-auto px-8 grid md:grid-cols-2 gap-16 items-center">
+                            <div className="relative">
+                                <div className="aspect-square bg-surface-container-high rounded-2xl overflow-hidden shadow-2xl">
+                                    <img alt="Engineering Consultation" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTFwvxqMwuFqV0JDyNlOGKPwPpR1wZcLZuNzG4Qy9lO27B9m9C5nLD4x0WHUqKKqH3N6eJ6dOOJ9XEn4D-rOvUVAnm4Ek6-_wkwG8T0TY_3Ts6WmRUbbvj8MHSq0Aayr9Ncchko35S3zahACK7TtvfFr8TqBMRT9mKIQkji19LM3ET7zl54U2Dr2n6TLE0wPNRdYzeTIDZy36oCpq9qzycDfdWhnWlO0aSZEF-6q-zxLkSj55ycjW0ochVAh73dtMCVXwLsFeqPQ" />
+                                </div>
+                                <div className="absolute -bottom-8 -right-8 w-64 h-64 glass-panel p-8 rounded-xl hidden lg:block">
+                                    <span className="material-symbols-outlined text-primary text-5xl mb-4">verified</span>
+                                    <h4 className="font-headline font-bold text-xl mb-2">99.9% Accuracy</h4>
+                                    <p className="text-sm text-on-surface-variant">Micron-level precision for aerospace and medical grade prototypes.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 className="font-headline text-4xl md:text-5xl font-bold mb-8 leading-tight">Engineered for Precision.<br />Built for Reliability.</h2>
+                                <p className="text-lg text-on-surface-variant mb-6 leading-relaxed">
+                                    At LayerCake 3D, we don't just print parts; we manufacture solutions. Our commitment to tectonic precision ensures that every layer contributes to the structural integrity and aesthetic excellence of your final product.
+                                </p>
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div>
+                                        <p className="text-primary text-3xl font-headline font-bold">500+</p>
+                                        <p className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Successful Projects</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-primary text-3xl font-headline font-bold">12μm</p>
+                                        <p className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Layer Resolution</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+
+        const ServicesPage = () => {
+            const navigate = useNavigate();
+            return (
+                <main className="pt-20">
+                    <section className="relative py-24 px-8 overflow-hidden">
+                        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                            <div className="z-10">
+                                <span className="inline-block py-1 px-3 rounded-full bg-secondary-container text-on-secondary-container text-xs font-medium tracking-widest mb-6 uppercase">Expert Manufacturing</span>
+                                <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter text-on-surface leading-[1.1] mb-8">
+                                    Comprehensive <span className="text-primary-container">3D Printing</span> Solutions for Every Need.
+                                </h1>
+                                <p className="text-on-surface-variant text-lg max-w-xl leading-relaxed">
+                                    From industrial-grade functional prototypes to ultra-detailed aesthetic models, we leverage advanced additive manufacturing to bring your geometry to life with tectonic precision.
+                                </p>
+                            </div>
+                            <div className="relative">
+                                <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
+                                <div className="relative rounded-xl overflow-hidden shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-700">
+                                    <img className="w-full h-[500px] object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uhT46bVa4C_x6nAnp3uDgENWJ7OL1YvCFMyWoqaDh-d8Veqxawu5H8MhQwlg1UBCtYhJr8lpdCNYoHzkkFxGXpCUCnFoOOEZRl6WRgNK3eg89XSfODqvjFMftpKjRyasqanzFtaoAmAtBC9Ru4fTxhUBKBx8eVBadP66D3rUzO2oboA2otvrb4XDSee6-oguWVcOk1v2oz9FWPZpMn9hExTUjlpfcAhjQqIxq3kKsw3DUaSyN22mdsanyHv2uwxQd_EmZE32OMu" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className="py-24 bg-surface-container-low">
+                        <div className="max-w-7xl mx-auto px-8">
+                            <div className="flex flex-col space-y-32">
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+                                    <div className="md:col-span-5 order-2 md:order-1">
+                                        <h2 className="font-headline text-4xl font-bold mb-6">FDM Printing</h2>
+                                        <p className="text-on-surface-variant text-lg mb-8 leading-relaxed">
+                                            Cost-effective, durable, and suitable for prototyping and functional parts. Fused Deposition Modeling is the backbone of rapid prototyping.
+                                        </p>
+                                        <ul className="space-y-4 mb-8">
+                                            <li className="flex items-center gap-3">
+                                                <span className="material-symbols-outlined text-primary-container">check_circle</span>
+                                                <span className="text-on-surface">Large-scale structural components</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div className="md:col-span-7 order-1 md:order-2">
+                                        <img className="rounded-xl w-full aspect-video object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp16sMHlcxxP-l-5o5YZMVW4aJUeOvClskC49cJ5JCVL34IpgJ6rPJSItka94v_UMb7eXe_j3baWjRf_pTbh2i4hPTjrDzKuQGx7VXbeZRjwy-8LTQeEPlCtM0p9Po9ViX0EaDJyZfRjj-CZNXiP-Kg1FRP0n6_5vjgWOCBT9oVCHvnVTJ0NW4pOb4O1rhBYdStpRrzvZIYkFq6HJl9Ybs8zVdSqUG2k4prKlD7ZPaL9Pg5fGWXxtrErdyEunvWiXZl4vyepS9YQ" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+
+        const AboutPage = () => {
+            return (
+                <main className="pt-20">
+                    <section className="relative min-h-[716px] flex items-center px-8 py-20 overflow-hidden">
+                        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
+                            <div className="space-y-8">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-primary text-xs font-bold tracking-widest uppercase">
+                                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                    Our Story
+                                </div>
+                                <h1 className="text-6xl md:text-8xl font-headline font-bold text-on-surface leading-[0.9] tracking-tighter">
+                                    High <span className="text-primary-container">Quality</span> In Every Layer
+                                </h1>
+                                <p className="text-xl text-on-surface-variant max-w-lg leading-relaxed">
+                                    Operating since 2022, LayerCake 3D was founded on the principle that digital imagination deserves physical perfection.
+                                </p>
+                            </div>
+                            <div className="relative group">
+                                <div className="absolute -inset-4 bg-primary/10 blur-3xl rounded-full opacity-50"></div>
+                                <img className="relative aspect-square rounded-2xl overflow-hidden border border-outline-variant/20 object-cover grayscale hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXQurU93vNaxMsmY74LvVgH7F9d05NfEZnEOhYYI6No27paX00H6Bm4ajTwLcEcGC9uo_B9swACCVe39rgz7b9vLu-BUGcs7O0DuPtsVOippmWDBbfOhZ0M445A74ez8VoDb7u5V8-_0ePdakmkBHIKuRbKWteqF1LeDV-T35yjup0cX2y7_fK4yF6tSJsQ3Bikf0mB5FpmJo2VgC-Lwb5Rqd7NhSiIb67tSfodEOg0JczO1Vq_DKbDHB4DcHI-dr6jMyMK3vr0g" />
+                            </div>
+                        </div>
+                    </section>
+                    <section className="bg-surface-container-low py-24 px-8 border-y border-outline-variant/10">
+                        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="text-center">
+                                <p className="text-5xl font-headline font-bold text-on-surface tracking-tighter">3,000+</p>
+                                <p className="text-sm font-label uppercase tracking-widest text-on-surface-variant">Projects Delivered</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-5xl font-headline font-bold text-primary tracking-tighter">24/7</p>
+                                <p className="text-sm font-label uppercase tracking-widest text-on-surface-variant">Print Capacity</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-5xl font-headline font-bold text-on-surface tracking-tighter">99.8%</p>
+                                <p className="text-sm font-label uppercase tracking-widest text-on-surface-variant">Precision Rate</p>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+
+     const PortfolioPage = () => {
+            const projects = [
+                { id: 1, title: 'Mechanical Assembly', material: 'PETG', image: 'https://i.postimg.cc/Mv35LQ2g/3fda7d84-3c74-497a-8351-7d9ec2a4592b.png' },
+                { id: 2, title: 'Precision Component', material: 'PLA+', image: 'https://i.postimg.cc/McVYX3cC/b75d6fba-3155-46b2-b81f-d0fb2e138167.png' },
+                { id: 3, title: 'Industrial Part', material: 'PETG', image: 'https://i.postimg.cc/MnhD6JG3/ece1b177-95da-4387-9250-ded35701c350.png' },
+                { id: 4, title: 'Custom Prototype', material: 'PLA+', image: 'https://i.postimg.cc/rDvJV2pC/f4509cf0-7ed1-4d8e-a075-5d83c6a4075d.png' },
+                { id: 5, title: 'Functional Gear', material: 'PETG', image: 'https://i.postimg.cc/gXKqHwHB/Whisk-328d5509d2d4abab935440851bac9687dr.png' },
+                { id: 6, title: 'Structural Module', material: 'PLA+', image: 'https://i.postimg.cc/phvJjQz2/Whisk-35bbb367c87be5e98a04b2f0f572aa96eg.png' },
+                { id: 7, title: 'Artistic Sculpture', material: 'PLA+', image: 'https://i.postimg.cc/87qHpgCL/Whisk-3e6e117392b7377afdc49f1d0cd689e2dr.png' },
+                { id: 8, title: 'Mechanical Linkage', material: 'PETG', image: 'https://i.postimg.cc/4nJ1N5XW/Whisk-537829b9388a2f9946f40df9f339b462dr.png' },
+                { id: 9, title: 'Technical Fitting', material: 'TPU', image: 'https://i.postimg.cc/vgytn7f4/Whisk-63ff86e7fb535b8b2f74a3e13eaf47e7dr.png' },
+                { id: 10, title: 'Case Housing', material: 'PLA+', image: 'https://i.postimg.cc/vDQvHzG3/Whisk-7291c0f6f57da7cab0e42845921fbceddr.png' },
+                { id: 11, title: 'Complex Geometry', material: 'PETG', image: 'https://i.postimg.cc/ZBmxNPp6/Whisk-770cbf29359b71a90864460d04593255dr.png' },
+                { id: 12, title: 'Final Finishing', material: 'PLA+', image: 'https://i.postimg.cc/nMH1ckng/Whisk-f708bedc21fd7d796f44a8f9ee412e2fdr.jpg' },
+            ];
+
+            return (
+                <main className="max-w-screen-2xl mx-auto px-8 py-32">
+                    <header className="mb-20">
+                        <h2 className="text-xs font-bold uppercase text-primary-container tracking-[0.4em] mb-4">Crafting Excellence</h2>
+                        <h1 className="text-6xl font-headline font-bold text-on-surface tracking-tighter">Our Portfolio</h1>
+                        <p className="mt-6 text-zinc-500 max-w-2xl text-lg font-medium leading-relaxed">
+                            High-resolution gallery of our 3D manufacturing projects.
+                        </p>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {projects.map((project) => (
+                            <div key={project.id} className="group relative bg-surface-container rounded-3xl overflow-hidden border border-outline-variant/10 hover:border-primary-container/40 transition-all duration-500 shadow-xl">
+                                {/* Image Container */}
+                                <div className="aspect-square overflow-hidden bg-zinc-950">
+                                    <img 
+                                        src={project.image} 
+                                        alt={project.title}
+                                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700"
+                                    />
+                                    {/* Info Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                                        <span className="text-[10px] font-bold uppercase text-primary-container bg-primary-container/10 self-start px-3 py-1 rounded-full backdrop-blur-md mb-2">{project.material}</span>
+                                        <h3 className="text-lg font-headline font-bold text-white leading-tight">{project.title}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </main>
+            );
+        };
+
+const CalculatorPage = () => {
+    const [infill, setInfill] = React.useState(20);
+    const [material, setMaterial] = React.useState('PLA+');
+    const [layerHeight, setLayerHeight] = React.useState(0.2); 
+    const [hasSupports, setHasSupports] = React.useState(false); 
+    const [color, setColor] = React.useState('Black');
+    const [quantity, setQuantity] = React.useState(1);
+    const [file, setFile] = React.useState(null);
+    const [uploading, setUploading] = React.useState(false);
+    const [totalPrice, setTotalPrice] = React.useState(0);
+    const [volume, setVolume] = React.useState(0); 
+    const [weight, setWeight] = React.useState(0); 
+    const fileInputRef = React.useRef(null);
+
+    const CLOUD_NAME = "dq8eyh6oc"; 
+    const UPLOAD_PRESET = "pvo5r7zi"; 
+
+    const materialProfiles = {
+        'PLA+': { density: 1.24, pricePerGram: 3.03 }, 
+        'PETG': { density: 1.27, pricePerGram: 5.03 }, 
+        'TPU':  { density: 1.21, pricePerGram: 6.03 }  
+    };
+
+    const colors = [
+        'Black', 'White', 'Grey', 'Silver', 'Gold', 'Copper', 
+        'Red', 'Crimson', 'Blue', 'Navy Blue', 'Cyan', 'Green', 
+        'Lime Green', 'Yellow', 'Orange', 'Purple', 'Pink', 
+        'Brown', 'Transparent', 'Glow in the Dark'
+    ];
+
+    const calculateSTLVolume = (file) => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loader = new THREE.STLLoader();
+                    const geometry = loader.parse(e.target.result);
+                    let v = 0;
+                    const pos = geometry.attributes.position;
+                    for (let i = 0; i < pos.count; i += 3) {
+                        const v1 = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i));
+                        const v2 = new THREE.Vector3(pos.getX(i+1), pos.getY(i+1), pos.getZ(i+1));
+                        const v3 = new THREE.Vector3(pos.getX(i+2), pos.getY(i+2), pos.getZ(i+2));
+                        v += (v1.x * v2.y * v3.z + v1.y * v2.z * v3.x + v1.z * v2.x * v3.y - 
+                              v1.x * v2.z * v3.y - v1.y * v2.x * v3.z - v1.z * v2.y * v3.x) / 6;
+                    }
+                    resolve(Math.abs(v));
+                } catch (err) { resolve(0); }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    };
+
+    const handleFileSelect = async (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            setFile(selectedFile);
+            const calculatedVolume = await calculateSTLVolume(selectedFile);
+            setVolume(calculatedVolume);
+        }
+    };
+
+    React.useEffect(() => {
+        if (volume > 0) {
+            const volumeInCm3 = volume / 1000;
+            const profile = materialProfiles[material];
+            let calculatedWeight = volumeInCm3 * profile.density * (infill / 100);
+            
+            if (hasSupports) {
+                calculatedWeight *= 1.125;
+            }
+
+            const finalWeight = parseFloat(calculatedWeight.toFixed(2));
+            setWeight(finalWeight);
+
+            let layerExtra = 0;
+            if (layerHeight === 0.16) layerExtra = 1;
+            if (layerHeight === 0.12) layerExtra = 2;
+
+            const finalPricePerGram = profile.pricePerGram + layerExtra;
+            const calculatedTotal = (finalWeight * finalPricePerGram) * quantity;
+            
+            setTotalPrice(calculatedTotal.toFixed(2));
+        } else {
+            setTotalPrice(0);
+            setWeight(0);
+        }
+    }, [infill, material, layerHeight, hasSupports, quantity, volume]);
+
+    const handleWhatsAppOrder = async () => {
+        let fileLink = "No file uploaded";
+        if (file) {
+            setUploading(true);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+            try {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`, {
+                    method: 'POST', body: formData
+                });
+                const data = await response.json();
+                fileLink = data.secure_url || "Upload Error";
+            } catch (error) { fileLink = "Upload Failed"; }
+            setUploading(false);
+        }
+
+        const phoneNumber = "201050040993"; 
+        const message = `*📦 New 3D Print Order*%0A` +
+                        `--------------------------%0A` +
+                        `*🔗 File Link:* ${fileLink}%0A` +
+                        `*⚖️ Weight:* ${weight}g%0A` +
+                        `*🛠️ Supports:* ${hasSupports ? 'Yes' : 'No'}%0A` +
+                        `*🧪 Material:* ${material}%0A` +
+                        `*🎨 Color:* ${color}%0A` +
+                        `*🔍 Resolution:* ${layerHeight}mm%0A` +
+                        `*🏁 Infill:* ${infill}%%0A` +
+                        `*🔢 Quantity:* ${quantity}%0A` +
+                        `--------------------------%0A` +
+                        `*💰 Total Price:* ${totalPrice} EGP`;
+        
+        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    };
+
+    return (
+        <main className="max-w-screen-2xl mx-auto px-8 py-32 text-on-surface">
+            {/* Calculator Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-24">
+                <div className="lg:col-span-7 space-y-10">
+                    <input type="file" ref={fileInputRef} className="hidden" accept=".stl" onChange={handleFileSelect} />
+                    
+                    <section onClick={() => !uploading && fileInputRef.current.click()} 
+                        className={`p-12 rounded-3xl border-2 border-dashed transition-all text-center cursor-pointer ${file ? 'border-primary-container bg-primary-container/5' : 'border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high'}`}>
+                        <span className="material-symbols-outlined text-7xl text-primary-container mb-4">{file ? 'task_alt' : 'cloud_upload'}</span>
+                        <h3 className="text-2xl font-bold mb-2">{file ? file.name : 'Upload 3D Design'}</h3>
+                        {weight > 0 && <p className="text-primary-container font-bold tracking-tight">Est. Weight: {weight}g</p>}
+                    </section>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="p-8 bg-surface-container rounded-3xl border border-outline-variant/10 shadow-sm col-span-1 md:col-span-2">
+                            <div className="flex justify-between mb-6">
+                                <label className="text-[10px] font-bold uppercase text-zinc-500 tracking-[0.3em]">Infill Density</label>
+                                <span className="text-primary-container font-bold">{infill}%</span>
+                            </div>
+                            <input type="range" min="5" max="100" step="5" value={infill} onChange={(e) => setInfill(Number(e.target.value))}
+                                className="w-full h-2 bg-background rounded-lg appearance-none cursor-pointer accent-primary-container" />
+                        </div>
+
+                        <div className="p-8 bg-surface-container rounded-3xl border border-outline-variant/10 shadow-sm col-span-1 md:col-span-2 flex justify-between items-center">
+                            <div>
+                                <h4 className="font-bold text-lg text-white">Generate Supports</h4>
+                                <p className="text-xs text-zinc-500">Enable for designs with overhanging parts.</p>
+                            </div>
+                            <button onClick={() => setHasSupports(!hasSupports)}
+                                className={`w-14 h-8 rounded-full transition-all relative ${hasSupports ? 'bg-primary-container' : 'bg-zinc-700'}`}>
+                                <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${hasSupports ? 'left-7' : 'left-1'}`}></div>
+                            </button>
+                        </div>
+
+                        <div className="p-8 bg-surface-container rounded-3xl border border-outline-variant/10 shadow-sm">
+                            <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-6 tracking-[0.3em]">Resolution</label>
+                            <div className="grid grid-cols-1 gap-3">
+                                {[{ label: 'Fine', value: 0.12 }, { label: 'Quality', value: 0.16 }, { label: 'Standard', value: 0.2 }].map((option) => (
+                                    <button key={option.value} onClick={() => setLayerHeight(option.value)}
+                                        className={`p-4 rounded-xl border-2 transition-all flex justify-between items-center ${layerHeight === option.value ? 'border-primary-container bg-primary-container/5 text-primary-container font-bold' : 'border-outline-variant/10 bg-surface-container-low text-zinc-400'}`}>
+                                        <span className="text-xs uppercase tracking-wider">{option.label}</span>
+                                        <span className="text-xs font-mono">{option.value}mm</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="p-8 bg-surface-container rounded-3xl border border-outline-variant/10 shadow-sm">
+                            <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-6 tracking-[0.3em]">Select Color</label>
+                            <select value={color} onChange={(e) => setColor(e.target.value)}
+                                className="w-full bg-surface-container-low border-2 border-outline-variant/20 py-4 px-6 rounded-2xl appearance-none outline-none font-bold text-sm text-white">
+                                {colors.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+               <aside className="lg:col-span-5">
+    <div className="bg-surface-container-high p-10 rounded-[2.5rem] border border-outline-variant/10 sticky top-32 shadow-2xl">
+        <div className="space-y-8">
+            <div className="flex gap-4">
+                <div className="flex-1">
+                    <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-3">Quantity</label>
+                    <input type="number" min="1" value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} 
+                        className="w-full bg-background border border-outline-variant/20 rounded-xl py-4 px-4 font-bold outline-none text-white text-center" />
+                </div>
+                <div className="flex-[2]">
+                    <label className="text-[10px] font-bold uppercase text-zinc-500 block mb-3">Material</label>
+                    <div className="flex bg-background p-1 rounded-xl border border-outline-variant/20">
+                        {Object.keys(materialProfiles).map(m => (
+                            <button key={m} onClick={() => setMaterial(m)} 
+                                className={`flex-1 py-3 rounded-lg text-[10px] font-bold transition-all ${material === m ? 'bg-primary-container text-on-primary shadow-md' : 'text-zinc-500 hover:text-white'}`}>
+                                {m}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="pt-8 border-t border-outline-variant/10 text-center">
+                <div className="mb-8">
+                    <span className="text-[10px] font-bold uppercase text-zinc-500 block mb-2 tracking-widest">Total Price</span>
+                    <div className="flex justify-center items-baseline gap-2">
+                        <span className="text-7xl font-bold text-on-surface tracking-tighter">{totalPrice}</span>
+                        <span className="text-xl font-bold text-primary-container ml-2">EGP</span>
+                    </div>
+
+                    {/* الملحوظة الصفراء الجديدة هنا */}
+                    <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl">
+                        <p className="text-yellow-500 text-[10px] md:text-xs font-medium leading-relaxed italic text-center">
+                            ⚠️ This is an approximate estimate. The final price will be confirmed via WhatsApp after reviewing your file.
+                        </p>
+                    </div>
+
+                    <p className="text-zinc-500 mt-4 font-medium italic text-xs">Estimated price for {quantity} unit(s)</p>
+                </div>
+                <button onClick={handleWhatsAppOrder} disabled={uploading || !file}
+                    className={`w-full py-6 rounded-2xl font-bold uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-3 active:scale-95 ${uploading ? 'bg-zinc-700 cursor-wait' : 'bg-[#25D366] text-white hover:brightness-110'}`}>
+                    <span className="material-symbols-outlined">{uploading ? 'sync' : 'send'}</span>
+                    {uploading ? 'Uploading...' : 'Order on WhatsApp'}
+                </button>
+            </div>
+        </div>
+    </div>
+</aside>
+            </div>
+
+            {/* Educational Guide Section - Updated with Images and Styling */}
+            <section className="mt-32 border-t border-outline-variant/20 pt-20 pb-20">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl font-bold text-white mb-4">3D Printing Guide</h2>
+                    <p className="text-zinc-500">Understand the technical terms for your perfect print</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Infill */}
+                    <div className="bg-surface-container p-8 rounded-[2rem] border border-outline-variant/5 group hover:border-primary-container/20 transition-all flex flex-col">
+                        <div className="flex items-center gap-4 mb-6">
+                            <span className="material-symbols-outlined text-primary-container text-4xl group-hover:scale-110 transition-transform">grid_view</span>
+                            <h3 className="text-2xl font-bold">Infill Density</h3>
+                        </div>
+                        <p className="text-zinc-400 mb-8 text-sm leading-relaxed flex-grow">
+                            The internal structure of the model. 20% is perfect for decorative items, 
+                            while 40-60% is ideal for functional parts that need strength. 100% makes it solid.
+                        </p>
+                        <div className="rounded-2xl overflow-hidden bg-black/40 border border-outline-variant/10 p-2 shadow-inner h-48 flex items-center justify-center">
+                            <img src="https://i.ibb.co/PGY9RYGr/infill.png" alt="Infill Guide" className="max-h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                    </div>
+
+                    {/* Layer Height */}
+                    <div className="bg-surface-container p-8 rounded-[2rem] border border-outline-variant/5 group hover:border-primary-container/20 transition-all flex flex-col">
+                        <div className="flex items-center gap-4 mb-6">
+                            <span className="material-symbols-outlined text-primary-container text-4xl group-hover:scale-110 transition-transform">layers</span>
+                            <h3 className="text-2xl font-bold">Layer Height (Resolution)</h3>
+                        </div>
+                        <p className="text-zinc-400 mb-8 text-sm leading-relaxed flex-grow">
+                            Determines the surface smoothness. 0.20mm is standard and fast, 
+                            while 0.12mm provides ultra-fine details with almost invisible layers.
+                        </p>
+                        <div className="rounded-2xl overflow-hidden bg-black/40 border border-outline-variant/10 p-2 shadow-inner h-48 flex items-center justify-center">
+                            <img src="https://i.ibb.co/qL25bc5G/layer.jpg" alt="Layer Height Guide" className="max-h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                    </div>
+
+                    {/* Supports */}
+                    <div className="bg-surface-container p-8 rounded-[2rem] border border-outline-variant/5 group hover:border-primary-container/20 transition-all flex flex-col">
+                        <div className="flex items-center gap-4 mb-6">
+                            <span className="material-symbols-outlined text-primary-container text-4xl group-hover:scale-110 transition-transform">architecture</span>
+                            <h3 className="text-2xl font-bold">Support Structures</h3>
+                        </div>
+                        <p className="text-zinc-400 mb-8 text-sm leading-relaxed flex-grow">
+                            Temporary scaffolds for parts that hang in the air. We add a small material 
+                            buffer (12.5%) when enabled to account for this extra material.
+                        </p>
+                        <div className="rounded-2xl overflow-hidden bg-black/40 border border-outline-variant/10 p-2 shadow-inner h-48 flex items-center justify-center">
+                            <img src="https://i.ibb.co/LhkQMyRB/support.png" alt="Support Structure Guide" className="max-h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                    </div>
+
+                    {/* Materials */}
+                    <div className="bg-surface-container p-8 rounded-[2rem] border border-outline-variant/5 group hover:border-primary-container/20 transition-all flex flex-col">
+                        <div className="flex items-center gap-4 mb-6">
+                            <span className="material-symbols-outlined text-primary-container text-4xl group-hover:scale-110 transition-transform">category</span>
+                            <h3 className="text-2xl font-bold">Materials</h3>
+                        </div>
+                        <p className="text-zinc-400 mb-8 text-sm leading-relaxed flex-grow">
+                            <strong className="text-white">PLA+:</strong> Tough & great look. | <strong className="text-white">PETG:</strong> Heat & chemical resistant. | <strong className="text-white">TPU:</strong> Flexible and rubber-like.
+                        </p>
+                        <div className="rounded-2xl overflow-hidden bg-black/40 border border-outline-variant/10 p-2 shadow-inner h-48 flex items-center justify-center">
+                            <img src="https://i.ibb.co/SDNXbkwr/Spool.webp" alt="3D Printing Materials" className="max-h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    );
+}; const ContactPage = () => {
+            const [submitted, setSubmitted] = useState(false);
+            return (
+                <main className="pt-24 px-8">
+                    <section className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-24">
+                        <div className="lg:col-span-4 space-y-8">
+                            <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter leading-tight">Get in Touch</h1>
+                            <div className="p-8 rounded-xl bg-surface-container border border-outline-variant/10 space-y-6">
+                                <div className="flex items-start gap-4">
+                                    <span className="material-symbols-outlined text-primary-container">location_on</span>
+                                    <div>
+                                        <p className="text-sm text-on-surface-variant">Our Studio</p>
+                                        <p className="text-on-surface font-medium">Cairo - Egypt</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <span className="material-symbols-outlined text-primary-container">call</span>
+                                    <div>
+                                        <p className="text-sm text-on-surface-variant">Phone & Whatsapp</p>
+                                        <p className="text-on-surface font-medium">+20 10500 40 993</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="lg:col-span-8">
+                            {submitted ? (
+                                <div className="p-12 bg-surface-container rounded-xl text-center">
+                                    <span className="material-symbols-outlined text-6xl text-primary mb-4">check_circle</span>
+                                    <h2 className="text-3xl font-headline font-bold mb-2">Message Sent!</h2>
+                                    <p className="text-on-surface-variant">Our engineering team will get back to you shortly.</p>
+                                    <button onClick={() => setSubmitted(false)} className="mt-8 text-primary font-bold">Send another message</button>
+                                </div>
+                            ) : (
+                                <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} className="p-8 md:p-12 rounded-xl bg-surface border border-outline-variant/10 shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Full Name</label>
+                                        <input required className="w-full bg-surface-container-high border-none rounded p-4 text-on-surface focus:ring-2 focus:ring-primary-container outline-none" placeholder="John Doe" type="text" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Email Address</label>
+                                        <input required className="w-full bg-surface-container-high border-none rounded p-4 text-on-surface focus:ring-2 focus:ring-primary-container outline-none" placeholder="john@example.com" type="email" />
+                                    </div>
+                                    <div className="md:col-span-2 space-y-2">
+                                        <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Your Message</label>
+                                        <textarea required className="w-full bg-surface-container-high border-none rounded p-4 text-on-surface focus:ring-2 focus:ring-primary-container outline-none resize-none" placeholder="Tell us about your project requirements..." rows="6"></textarea>
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <button className="w-full bg-primary-container text-on-primary-container py-4 rounded font-bold text-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
+                                            Transmit Message <span className="material-symbols-outlined">send</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+const ProductsPage = () => {
+    // 1. All Products Data
+    const [products, setProducts] = React.useState([
+        { id: 1, name: "Tsunami Headphone Stand", price: 540, image: "https://i.ibb.co/FqfkmrdF/Tsunami-Headphone-Stand-5.png" },
+        { id: 2, name: "Controller Stand V3", price: 380, image: "https://i.ibb.co/G4Vy1qVR/20241014-005119.png" },
+        { id: 3, name: "Controller Stand V2", price: 530, image: "https://i.ibb.co/7JnXkQ8C/20241029-101438.png" },
+        { id: 4, name: "Universal Controller Stand", price: 550, image: "https://i.ibb.co/Nd26bX15/20241104-101830.png" },
+        { id: 6, name: "Brachial Plexus Model", price: 1700, image: "https://i.ibb.co/Gv5ZHvy3/2.png" },
+        { id: 7, name: "Anatomical Spine Model", price: 1600, image: "https://i.ibb.co/XxDVkLFw/3.png" },
+        { id: 8, name: "Anatomical Hand Model", price: 500, image: "https://i.ibb.co/NgbNXHn0/4.png" },
+        { id: 12, name: "Book-Shaped Storage Box", price: 1300, image: "https://i.ibb.co/B5r3Gnw0/03.webp" },
+        { id: 13, name: "Bunny Chocolate Holder", price: 140, image: "https://i.ibb.co/SwjRCpZk/1a-3a-20260314-093308.webp" },
+        { id: 15, name: "Scrolling Room Sign", price: 45, image: "https://i.ibb.co/Zp97sHDC/1772643249453.webp" },
+        { id: 16, name: "Car Rim Keychain", price: 30, image: "https://i.ibb.co/v4dBnzxv/5298962107158174565.webp" },
+        { id: 17, name: "Pluto Dog Figure", price: 200, image: "https://i.ibb.co/k69pb4J7/IMG-4269.jpg" },
+        { id: 19, name: "Baby Mickey Mouse", price: 100, image: "https://i.ibb.co/sJ6KhfBy/2025-06-04-750b7254cba56.webp" },
+        { id: 20, name: "Donald Duck Figure", price: 220, image: "https://i.ibb.co/ycVtLQbw/IMG-4416.jpg" },
+        { id: 21, name: "Scrooge McDuck", price: 400, image: "https://i.ibb.co/RpYPkpC8/IMG-4416.jpg" },
+        { id: 26, name: "Wall Shelf", price: 630, image: "https://i.ibb.co/wNnQYCwm/downlo312312312311ad.jpg" },
+        { id: 27, name: "Incense Holder & Ashtray", price: 250, image: "https://i.ibb.co/7NChXL9D/Chat-GPT-Image-2026-ma-rc-15-08-25-33.png" },
+        { id: 28, name: "Spider-Man Figure", price: 660, image: "https://i.ibb.co/mVbxWf8J/20260316-012908.jpg" },
+        { id: 22, name: "Taz Figure", price: 750, image: "https://i.ibb.co/5gd7RyfS/20250707-124607.jpg" },
+        { id: 23, name: "Pillow Phone Stand", price: 900, image: "https://i.ibb.co/JRQH3Lnq/Pillow-Phone-Stand1.png" },
+        { id: 24, name: "Drill Dust Collector", price: 120, image: "https://i.ibb.co/bgcDBZn9/20241202-183345.png" },
+        { id: 25, name: "Racing Seat Phone Stand", price: 250, image: "https://i.ibb.co/qY8LxPq8/Support-tel-baquet-1.png" },
+        { id: 18, name: "Minnie Mouse Figure", price: 290, image: "https://i.ibb.co/0VXBTk1v/IMG-3655.jpg" },
+        { 
+            id: 14, 
+            name: "Pencil Holder", 
+            price: 330, 
+            images: [
+                "https://i.ibb.co/JwZgsY7C/img-20260223-204748.webp",
+                "https://i.ibb.co/Cs46sMn7/game-over269.webp",
+                "https://i.ibb.co/JjGpMzGT/1.webp",
+                "https://i.ibb.co/zWLycXP4/Whisk-63ff86e7fb535b8b2f74a3e13eaf47e7dr.png"
+            ],
+            currentImg: 0 
+        }
+    ]);
+
+    // 2. States
+    const [searchTerm, setSearchTerm] = React.useState("");
+    const [selectedImg, setSelectedImg] = React.useState(null);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const productsPerPage = 12;
+
+    // 3. Search & Pagination Logic
+    const filteredProducts = products.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    
+    // Show ALL if searching, otherwise Paginate
+    const currentProducts = searchTerm 
+        ? filteredProducts 
+        : filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+    const changeImg = (productId, direction, e) => {
+        e.stopPropagation();
+        setProducts(prev => prev.map(p => {
+            if (p.id === productId && p.images) {
+                const nextIndex = (p.currentImg + direction + p.images.length) % p.images.length;
+                return { ...p, currentImg: nextIndex };
+            }
+            return p;
+        }));
+    };
+
+    return (
+        <main className="min-h-screen bg-black text-white p-6 md:p-12">
+            {/* Search Section */}
+            <div className="max-w-xl mx-auto mb-16 text-center">
+                <h1 className="text-4xl font-bold mb-8 italic tracking-widest text-blue-500">STORE</h1>
+                <div className="relative group">
+                    <input 
+                        type="text"
+                        placeholder="Search for products..."
+                        className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-4 px-6 outline-none focus:border-blue-500 transition-all text-lg"
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1); // Reset to page 1 on search
+                        }}
+                    />
+                </div>
+            </div>
+            
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-[1600px] mx-auto">
+                {currentProducts.map(p => (
+                    <div key={p.id} className="bg-zinc-900/40 rounded-[2.5rem] p-5 border border-zinc-800/50 flex flex-col hover:border-blue-500/50 transition-all duration-300">
+                        <div 
+                            className="relative aspect-square mb-5 overflow-hidden rounded-3xl bg-zinc-950 cursor-zoom-in group"
+                            onClick={() => setSelectedImg(p.images ? p.images[p.currentImg || 0] : p.image)}
+                        >
+                            <img 
+                                src={p.images ? p.images[p.currentImg || 0] : p.image} 
+                                className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110" 
+                                alt={p.name}
+                            />
+                            {p.images && (
+                                <div className="absolute inset-0 flex items-center justify-between px-3">
+                                    <button onClick={(e) => changeImg(p.id, -1, e)} className="w-10 h-10 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors">‹</button>
+                                    <button onClick={(e) => changeImg(p.id, 1, e)} className="w-10 h-10 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors">›</button>
+                                </div>
+                            )}
+                        </div>
+
+                        <h3 className="font-bold text-xl mb-1 px-2 truncate">{p.name}</h3>
+                        <p className="text-blue-400 font-black text-lg px-2 mb-6">{p.price} EGP</p>
+                        
+                        <button 
+                            onClick={() => window.open(`https://wa.me/201050040993?text=Order: ${p.name}`, '_blank')}
+                            className="w-full py-4 bg-green-600 hover:bg-green-500 text-white rounded-2xl font-bold transition-all mt-auto flex items-center justify-center gap-2"
+                        >
+                            Order on WhatsApp
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            {/* Pagination - Only shown when not searching */}
+            {!searchTerm && totalPages > 1 && (
+                <div className="mt-20 flex justify-center items-center gap-4">
+                    <button 
+                        onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo(0,0); }}
+                        disabled={currentPage === 1}
+                        className={`px-6 py-3 rounded-xl font-bold ${currentPage === 1 ? 'bg-zinc-800 text-zinc-600' : 'bg-white text-black hover:bg-blue-500 hover:text-white transition-colors'}`}
+                    >
+                        Prev
+                    </button>
+                    <span className="text-zinc-500 font-bold">Page {currentPage} of {totalPages}</span>
+                    <button 
+                        onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo(0,0); }}
+                        disabled={currentPage === totalPages}
+                        className={`px-6 py-3 rounded-xl font-bold ${currentPage === totalPages ? 'bg-zinc-800 text-zinc-600' : 'bg-white text-black hover:bg-blue-500 hover:text-white transition-colors'}`}
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
+
+            {/* Modal Image Zoom */}
+            {selectedImg && (
+                <div 
+                    className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-200"
+                    onClick={() => setSelectedImg(null)}
+                >
+                    <span className="absolute top-10 right-10 text-white text-6xl cursor-pointer hover:text-red-500">×</span>
+                    <img 
+                        src={selectedImg} 
+                        className="max-w-[95%] max-h-[90vh] object-contain rounded-2xl shadow-2xl animate-in zoom-in duration-300"
+                        alt="Zoomed"
+                    />
+                </div>
+            )}
+
+            {filteredProducts.length === 0 && (
+                <div className="text-center py-40 text-zinc-700 text-2xl italic">No matches found for your search.</div>
+            )}
+        </main>
+    );
+};
+    const App = () => {
+            const ScrollToTop = () => {
+                const { pathname } = useLocation();
+                useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+                return null;
+            };
+
+            return (
+                <MemoryRouter>
+                    <ScrollToTop />
+                    <Navbar />
+<Routes>
+    <Route path="/" element={<HomePage />} />
+    <Route path="/calculator" element={<CalculatorPage />} />
+    <Route path="/products" element={<ProductsPage />} /> 
+    <Route path="/services" element={<ServicesPage />} />
+    <Route path="/portfolio" element={<PortfolioPage />} />
+    <Route path="/about" element={<AboutPage />} />
+    <Route path="/contact" element={<ContactPage />} />
+</Routes>
+                    <Footer />
+                </MemoryRouter>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
