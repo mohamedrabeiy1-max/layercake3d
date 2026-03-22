@@ -997,117 +997,119 @@ const ProductsPage = () => {
     );
 };
 const BlogPage = () => {
-            const { t, lang } = useContext(LanguageContext);
-            
-            // بيانات الخامات بتتغير حسب اللغة
-            const materials = lang === 'ar' ? [
-                { name: '+PLA (المطور)', easy: '10/10', heat: '50°C', strength: 'صلب ومتين جداً', use: 'نماذج دقيقة وهدايا' },
-                { name: 'PETG', easy: '7/10', heat: '80°C', strength: 'مقاوم للصدمات والحرارة', use: 'أجزاء ميكانيكية' },
-                { name: 'TPU (المرن)', easy: '6/10', heat: '70°C', strength: 'مرونة عالية (زي الكاوتش)', use: 'جرابات وممتصات صدمات' },
-            ] : [
-                { name: 'PLA (Enhanced)+', easy: '10/10', heat: '50°C', strength: 'Very rigid & tough', use: 'Detailed models & gifts' },
-                { name: 'PETG', easy: '7/10', heat: '80°C', strength: 'Impact & heat resistant', use: 'Mechanical parts' },
-                { name: 'TPU (Flexible)', easy: '6/10', heat: '70°C', strength: 'High flexibility (Rubber-like)', use: 'Phone cases & dampers' },
-            ];
+    const { t, lang } = useContext(LanguageContext);
+    
+    const materials = lang === 'ar' ? [
+        { name: '+PLA (المطور)', easy: '10/10', heat: '50°C', strength: 'صلب ومتين جداً', use: 'نماذج دقيقة وهدايا' },
+        { name: 'PETG', easy: '7/10', heat: '80°C', strength: 'مقاوم للصدمات والحرارة', use: 'أجزاء ميكانيكية' },
+        { name: 'TPU (المرن)', easy: '6/10', heat: '70°C', strength: 'مرونة عالية (زي الكاوتش)', use: 'جرابات وممتصات صدمات' },
+    ] : [
+        { name: 'PLA (Enhanced)+', easy: '10/10', heat: '50°C', strength: 'Very rigid & tough', use: 'Detailed models & gifts' },
+        { name: 'PETG', easy: '7/10', heat: '80°C', strength: 'Impact & heat resistant', use: 'Mechanical parts' },
+        { name: 'TPU (Flexible)', easy: '6/10', heat: '70°C', strength: 'High flexibility (Rubber-like)', use: 'Phone cases & dampers' },
+    ];
 
-            return (
-                <main className="pt-32 pb-20 px-8 max-w-7xl mx-auto" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-                    {/* الجزء العلوي - العنوان والوصف */}
-                    <div className="text-center mb-16">
-                        <span className="inline-block px-4 py-1 mb-4 rounded-full bg-[#00E5FF]/10 text-[#00E5FF] text-xs font-bold uppercase tracking-widest">
-                            {t.blog.tag}
-                        </span>
-                        <h1 className="text-5xl font-headline font-bold text-white mb-6 leading-tight">
-                            {t.blog.title}
-                        </h1>
-                        <p className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-                            {t.blog.desc}
+    return (
+        <main className="pt-32 pb-20 px-8 max-w-7xl mx-auto" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+            {/* الجزء العلوي */}
+            <div className="text-center mb-16">
+                <span className="inline-block px-4 py-1 mb-4 rounded-full bg-[#00E5FF]/10 text-[#00E5FF] text-xs font-bold uppercase tracking-widest">
+                    {t.blog.tag}
+                </span>
+                <h1 className="text-5xl font-headline font-bold text-white mb-6 leading-tight">
+                    {t.blog.title}
+                </h1>
+                <p className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+                    {t.blog.desc}
+                </p>
+            </div>
+
+            {/* سيكشن الـ FDM - إصلاح الترتيب والمحاذاة */}
+            <section className="glass-panel p-8 md:p-12 rounded-2xl mb-12 border border-white/5 shadow-2xl bg-[#1a1a1a]">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                    
+                    {/* محتوى النص - دايماً بياخد text-start عشان يتبع اتجاه الصفحة */}
+                    <div className={`flex flex-col text-start items-start`}>
+                        <h2 className="text-3xl font-headline font-bold mb-6 text-[#00E5FF]">
+                            {t.blog.fdmTitle}
+                        </h2>
+                        <p className="text-zinc-400 leading-relaxed text-lg mb-8">
+                            {t.blog.fdmDesc}
                         </p>
+                        
+                        {/* الأيقونات - تعتمد على اتجاه الـ flex الطبيعي */}
+                        <div className="flex gap-8 items-center w-full">
+                            <div className="flex items-center gap-2 text-[#00E5FF] font-bold font-headline text-sm">
+                                <span className="material-symbols-outlined text-base">shutter_speed</span>
+                                <span>{lang === 'en' ? 'High Speed' : 'سرعة في التنفيذ'}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-[#00E5FF] font-bold font-headline text-sm">
+                                <span className="material-symbols-outlined text-base">precision_manufacturing</span>
+                                <span>{lang === 'en' ? 'Precision' : 'دقة متناهية'}</span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* سيكشن الـ FDM - إصلاح المحاذاة بجانب الصورة */}
-                    <section className="glass-panel p-8 md:p-12 rounded-2xl mb-12 border border-white/5 shadow-2xl bg-[#1a1a1a]">
-                        <div className="grid md:grid-cols-2 gap-12 items-center">
-                            <div className={`flex flex-col ${lang === 'en' ? 'text-left items-start' : 'text-right items-end'}`}>
-                                <h2 className="text-3xl font-headline font-bold mb-6 text-[#00E5FF]">
-                                    {t.blog.fdmTitle}
-                                </h2>
-                                <p className="text-zinc-400 leading-relaxed text-lg mb-8">
-                                    {t.blog.fdmDesc}
-                                </p>
-                                
-                                {/* أيقونات المميزات - إصلاح الاتجاه */}
-                                <div className={`flex gap-8 items-center w-full ${lang === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
-                                    <div className="flex items-center gap-2 text-[#00E5FF] font-bold font-headline text-sm">
-                                        <span className="material-symbols-outlined text-base">shutter_speed</span>
-                                        <span>{lang === 'en' ? 'High Speed' : 'سرعة في التنفيذ'}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-[#00E5FF] font-bold font-headline text-sm">
-                                        <span className="material-symbols-outlined text-base">precision_manufacturing</span>
-                                        <span>{lang === 'en' ? 'Precision' : 'دقة متناهية'}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg relative h-72 group order-first md:order-none">
-                                <img 
-                                    src="https://res.cloudinary.com/dmdxeg7co/image/upload/v1774194133/high-quality-fdm-3d-printing-services-for-all-industries-1000x1000_nzprs5.webp" 
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                    alt="FDM Printing Service"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                                <div className="absolute bottom-4 left-0 right-0 text-center px-4">
-                                    <span className="text-[#00E5FF] font-headline text-[10px] font-black italic tracking-[0.2em] uppercase">
-                                        LayerCake 3D FDM Industrial Tech
-                                    </span>
-                                </div>
-                            </div>
+                    {/* الصورة - نستخدم order-first للموبايل، وفي الديسك توب ترتيبها طبيعي */}
+                    <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg relative h-72 group order-first md:order-last">
+                        <img 
+                            src="https://res.cloudinary.com/dmdxeg7co/image/upload/v1774194133/high-quality-fdm-3d-printing-services-for-all-industries-1000x1000_nzprs5.webp" 
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            alt="FDM Printing Service"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div className="absolute bottom-4 left-0 right-0 text-center px-4">
+                            <span className="text-[#00E5FF] font-headline text-[10px] font-black italic tracking-[0.2em] uppercase">
+                                LayerCake 3D FDM Industrial Tech
+                            </span>
                         </div>
-                    </section>
+                    </div>
+                </div>
+            </section>
 
-                    {/* سيكشن الجدول - إصلاح العناوين والاتجاه */}
-                    <section>
-                        <h2 className={`text-3xl font-headline font-bold mb-8 text-white ${lang === 'ar' ? 'border-r-4 pr-4 text-right' : 'border-l-4 pl-4 text-left'} border-[#00E5FF]`}>
-                            {t.blog.materialsTitle}
-                        </h2>
-                        <div className="overflow-x-auto rounded-xl border border-white/10 shadow-xl bg-[#1a1a1a]">
-                            <table className="w-full text-center border-collapse">
-                                <thead className="bg-[#131313] text-[#00E5FF] font-headline uppercase text-[10px] tracking-widest">
-                                    <tr>
-                                       <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
-            {lang === 'en' ? 'Material' : 'الخامة'}
-        </th>
-        <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
-            {lang === 'en' ? 'Ease of Printing' : 'سهولة الطباعة'}
-        </th>
-        <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
-            {lang === 'en' ? 'Heat Resistance' : 'تحمل الحرارة'}
-        </th>
-        <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
-            {lang === 'en' ? 'Strength' : 'القوة / المرونة'}
-        </th>
-        <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
-            {lang === 'en' ? 'Best Use' : 'أفضل استخدام'}
-        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="text-zinc-400">
-                                    {materials.map((m, idx) => (
-                                        <tr key={idx} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                            <td className="p-5 font-bold text-white">{m.name}</td>
-                                            <td className="p-5">{m.easy}</td>
-                                            <td className="p-5 text-[#00E5FF] font-medium">{m.heat}</td>
-                                            <td className="p-5">{m.strength}</td>
-                                            <td className="p-5 text-sm italic">{m.use}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                </main>
-            );
-        };
+            {/* سيكشن الجدول */}
+            <section>
+                <h2 className={`text-3xl font-headline font-bold mb-8 text-white border-[#00E5FF] ${lang === 'ar' ? 'border-r-4 pr-4' : 'border-l-4 pl-4'}`}>
+                    {t.blog.materialsTitle}
+                </h2>
+                <div className="overflow-x-auto rounded-xl border border-white/10 shadow-xl bg-[#1a1a1a]">
+                    <table className="w-full border-collapse" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+                        <thead className="bg-[#131313]">
+                            <tr>
+                                <th className="p-5 text-sm font-bold text-[#00E5FF] uppercase tracking-wider text-start">
+                                    {lang === 'en' ? 'Material' : 'الخامة'}
+                                </th>
+                                <th className="p-5 text-sm font-bold text-[#00E5FF] uppercase tracking-wider text-start">
+                                    {lang === 'en' ? 'Ease of Printing' : 'سهولة الطباعة'}
+                                </th>
+                                <th className="p-5 text-sm font-bold text-[#00E5FF] uppercase tracking-wider text-start">
+                                    {lang === 'en' ? 'Heat Resistance' : 'تحمل الحرارة'}
+                                </th>
+                                <th className="p-5 text-sm font-bold text-[#00E5FF] uppercase tracking-wider text-start">
+                                    {lang === 'en' ? 'Strength' : 'القوة / المرونة'}
+                                </th>
+                                <th className="p-5 text-sm font-bold text-[#00E5FF] uppercase tracking-wider text-start">
+                                    {lang === 'en' ? 'Best Use' : 'أفضل استخدام'}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-zinc-400">
+                            {materials.map((m, idx) => (
+                                <tr key={idx} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                    <td className="p-5 font-bold text-white text-start">{m.name}</td>
+                                    <td className="p-5 text-start">{m.easy}</td>
+                                    <td className="p-5 text-[#00E5FF] font-medium text-start">{m.heat}</td>
+                                    <td className="p-5 text-start">{m.strength}</td>
+                                    <td className="p-5 text-sm italic text-start">{m.use}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    );
+};
         const App = () => {
             const [lang, setLang] = useState('en');
             const t = translations[lang];
