@@ -103,6 +103,7 @@
             background-size: 24px 24px;
         }
         body[dir="rtl"] { font-family: 'Cairo', sans-serif; }
+
     </style>
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
@@ -116,9 +117,9 @@
         // --- Language Context ---
         const LanguageContext = createContext();
 
-        const translations = {
+const translations = {
             en: {
-                nav: { home: 'Home', calculator: 'STL Calculator', products: 'Products', services: 'Services', portfolio: 'Portfolio', about: 'About Us', contact: 'Contact', quote: 'Request a Quote' },
+                nav: { home: 'Home', calculator: 'STL Calculator', products: 'Products', services: 'Services', portfolio: 'Portfolio', about: 'About Us', contact: 'Contact', quote: 'Request a Quote', blog: 'Blog' },
                 hero: { tag: 'Best Quality', title: '3d Printing', subtitle: 'Layers of Innovation.', desc: 'LayerCake 3D: Your partner in turning concepts into high-quality physical objects with engineered density and industrial accuracy.', ctaQuote: 'Get an Instant Quote', ctaPortfolio: 'View Portfolio' },
                 partners: 'WORKING FOR MAKE YOU HAPPY',
                 partnersList: ['SPEED', 'QUALITY', 'MODELING', 'DELIVERY'],
@@ -135,10 +136,20 @@
                 },
                 contact: { title: 'Get in Touch', studio: 'Our Studio', location: 'Cairo - Egypt', phone: 'Phone & Whatsapp', success: 'Message Sent!', successDesc: 'Our engineering team will get back to you shortly.', another: 'Send another message', name: 'Full Name', email: 'Email Address', msg: 'Your Message', placeholderName: 'John Doe', placeholderEmail: 'john@example.com', placeholderMsg: 'Tell us about your project requirements...', submit: 'Transmit Message' },
                 store: { title: 'STORE', search: 'Search for products...', order: 'Order on WhatsApp', noMatches: 'No matches found for your search.', page: 'Page', of: 'of', prev: 'Prev', next: 'Next' },
-                footer: { desc: 'Best quality applied to every layer. Industrial additive manufacturing solutions.', printing: 'Printing', materials: 'Materials', support: 'Support', copyright: '© 2024 LayerCake 3D. Fast Solutions.' }
+                footer: { desc: 'Best quality applied to every layer. Industrial additive manufacturing solutions.', printing: 'Printing', materials: 'Materials', support: 'Support', copyright: '© 2024 LayerCake 3D. Fast Solutions.' },
+                blog: { 
+    tag: 'Knowledge Base', 
+    title: '3D Printing Insights', 
+    desc: 'Understand FDM technology and discover the perfect material for your next project with LayerCake 3D.',
+    fdmTitle: 'Why Choose FDM Printing?',
+    fdmDesc: 'FDM technology is the magic that transforms a digital file into a tangible, high-quality product. At LayerCake, we print layer by layer with micron-level precision, ensuring a strong, detailed, and visually stunning model. Whether you need an engineering prototype or a decorative piece, FDM is the fastest and most durable solution.',
+    materialsTitle: 'Comparison of Best Materials (PLA+, PETG, TPU)',
+    readMore: 'Read Article',
+    back: 'Back to Blog'
+}
             },
             ar: {
-                nav: { home: 'الرئيسية', calculator: 'حساب التكلفة', products: 'المنتجات', services: 'الخدمات', portfolio: 'سابقة الأعمال', about: 'من نحن', contact: 'اتصل بنا', quote: 'طلب عرض سعر' },
+                nav: { home: 'الرئيسية', calculator: 'حساب التكلفة', products: 'المنتجات', services: 'الخدمات', portfolio: 'سابقة الأعمال', about: 'من نحن', contact: 'اتصل بنا', quote: 'طلب عرض سعر', blog: 'المدونة' },
                 hero: { tag: 'دقة هندسية', title: 'طباعة ثلاثية الأبعاد', subtitle: 'طبقات من الابتكار', desc: 'لاير كيك 3D: شريكك لتحويل أفكارك لمنتجات ملموسة بجودة عالية، كثافة مدروسة، ودقة صناعية.', ctaQuote: 'احصل على سعر فوري', ctaPortfolio: 'عرض الأعمال' },
                 partners: 'نعمل من أجل سعادتك',
                 partnersList: ['سرعة', 'جودة', 'نمذجة', 'توصيل'],
@@ -155,7 +166,17 @@
                 },
                 contact: { title: 'تواصل معنا', studio: 'الاستوديو الخاص بنا', location: 'القاهرة - مصر', phone: 'الهاتف والواتساب', success: 'تم الإرسال!', successDesc: 'فريقنا الهندسي سيتواصل معك في أقرب وقت.', another: 'إرسال رسالة أخرى', name: 'الاسم الكامل', email: 'البريد الإلكتروني', msg: 'رسالتك', placeholderName: 'عمر سامي', placeholderEmail: 'omar@example.com', placeholderMsg: 'أخبرنا عن متطلبات مشروعك...', submit: 'إرسال الرسالة' },
                 store: { title: 'المتجر', search: 'ابحث عن المنتجات...', order: 'اطلب عبر الواتساب', noMatches: 'لم يتم العثور على نتائج لبحثك.', page: 'صفحة', of: 'من', prev: 'السابق', next: 'التالي' },
-                footer: { desc: 'دقة عالية مطبقة على كل طبقة. حلول تصنيع إضافية صناعية.', printing: 'الطباعة', materials: 'الخامات', support: 'الدعم', copyright: '© 2024 لاير كيك 3D. دقة هندسية مطبقة.' }
+                footer: { desc: 'دقة عالية مطبقة على كل طبقة. حلول تصنيع إضافية صناعية.', printing: 'الطباعة', materials: 'الخامات', support: 'الدعم', copyright: '© 2024 لاير كيك 3D. دقة هندسية مطبقة.' },
+               blog: { 
+    tag: 'موسوعة المعرفة', 
+    title: 'دليلك الشامل للطباعة ثلاثية الأبعاد', 
+    desc: 'تعرف على تكنولوجيا الـ FDM واكتشف الخامة المثالية لمشروعك القادم مع LayerCake 3D.',
+    fdmTitle: 'ليه تختار طباعة الـ FDM؟',
+    fdmDesc: 'تقنية الـ FDM هي السحر اللي بيحول ملف رقمي لمنتج حقيقي ملموس. إحنا في LayerCake بنطبع طبقة فوق طبقة بدقة ميكرونية، وده بيضمنلك مجسم قوي، تفاصيله واضحة، وشكله شيك يجذب أي زبون. سواء كنت عايز نموذج هندسي أو قطعة ديكور، الـ FDM هي الحل الأسرع والأمتن.',
+    materialsTitle: 'مقارنة بين أفضل خامات الطباعة (PLA+, PETG, TPU)',
+    readMore: 'اقرأ المقال',
+    back: 'العودة للمدونة'
+}
             }
         };
 
@@ -170,6 +191,7 @@
                 { name: t.nav.calculator, path: '/calculator' },
                 { name: t.nav.products, path: '/products' },
                 { name: t.nav.services, path: '/services' },
+{ name: t.nav.blog, path: '/blog' },
                 { name: t.nav.portfolio, path: '/portfolio' },
                 { name: t.nav.about, path: '/about' },
                 { name: t.nav.contact, path: '/contact' },
@@ -212,7 +234,7 @@
             );
         };
 
-        const Footer = () => {
+ const Footer = () => {
             const { t } = useContext(LanguageContext);
             return (
                 <footer className="w-full border-t border-[#3b494c]/15 bg-[#131313]">
@@ -223,7 +245,25 @@
                                 <div className="text-xl font-bold text-[#00E5FF] font-['Space_Grotesk']">LayerCake 3D</div>
                             </div>
                             <p className="text-zinc-500 text-sm leading-relaxed">{t.footer.desc}</p>
+                            
+                            {/* زرار الفيسبوك المودرن */}
+                            <div className="flex gap-4 mt-6">
+                                <a 
+                                    href="https://www.facebook.com/LayerCake3dPrint/" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="group flex items-center gap-2 text-zinc-500 hover:text-[#00E5FF] transition-all duration-300"
+                                >
+                                    <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center group-hover:bg-[#00E5FF]/10 border border-white/5 group-hover:border-[#00E5FF]/50 transition-all">
+                                        <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                        </svg>
+                                    </div>
+                                    <span className="text-sm font-medium">LayerCake 3D Print</span>
+                                </a>
+                            </div>
                         </div>
+                        
                         <div>
                             <h4 className="text-on-surface font-bold text-sm mb-6 uppercase tracking-widest">{t.footer.printing}</h4>
                             <ul className="space-y-3">
@@ -249,11 +289,6 @@
                     </div>
                     <div className="px-12 py-8 max-w-7xl mx-auto border-t border-[#3b494c]/10 flex flex-col md:flex-row justify-between items-center gap-4 text-center">
                         <p className="text-zinc-500 text-sm">{t.footer.copyright}</p>
-                        <div className="flex gap-6">
-                            <span className="material-symbols-outlined text-zinc-500 cursor-pointer hover:text-primary transition-colors">share</span>
-                            <span className="material-symbols-outlined text-zinc-500 cursor-pointer hover:text-primary transition-colors">hub</span>
-                            <span className="material-symbols-outlined text-zinc-500 cursor-pointer hover:text-primary transition-colors">biotech</span>
-                        </div>
                     </div>
                 </footer>
             );
@@ -307,14 +342,20 @@
                                 <div className="aspect-square bg-surface-container-high rounded-2xl overflow-hidden shadow-2xl">
                                     <img alt="Engineering Consultation" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTFwvxqMwuFqV0JDyNlOGKPwPpR1wZcLZuNzG4Qy9lO27B9m9C5nLD4x0WHUqKKqH3N6eJ6dOOJ9XEn4D-rOvUVAnm4Ek6-_wkwG8T0TY_3Ts6WmRUbbvj8MHSq0Aayr9Ncchko35S3zahACK7TtvfFr8TqBMRT9mKIQkji19LM3ET7zl54U2Dr2n6TLE0wPNRdYzeTIDZy36oCpq9qzycDfdWhnWlO0aSZEF-6q-zxLkSj55ycjW0ochVAh73dtMCVXwLsFeqPQ" />
                                 </div>
-                                <div className={`absolute -bottom-8 ${lang === 'ar' ? '-left-8' : '-right-8'} w-64 h-64 glass-panel p-8 rounded-xl hidden lg:block`}>
-                                    <span className="material-symbols-outlined text-primary text-5xl mb-4">verified</span>
-                                    <h4 className="font-headline font-bold text-xl mb-2">{t.features.badgeTitle}</h4>
-                                    <p className="text-sm text-on-surface-variant">{t.features.badgeDesc}</p>
-                                </div>
+                               <div className={`flex flex-col ${lang === 'en' ? 'text-left items-start' : 'text-right items-end'}`}>
+    <h2 className="text-3xl font-headline font-bold mb-6 text-[#00E5FF]">
+        {t.blog.fdmTitle}
+    </h2>
+    <p className="text-zinc-400 leading-relaxed text-lg mb-8">
+        {t.blog.fdmDesc}
+    </p>
+</div>
                             </div>
                             <div>
-                                <h2 className="font-headline text-4xl md:text-5xl font-bold mb-8 leading-tight">{t.features.title}</h2>
+                                // التعديل في صفحة الـ HomePage
+<h2 className="font-headline text-5xl md:text-7xl font-black mb-8 leading-tight tracking-tighter text-primary">
+    {t.features.title}
+</h2>
                                 <p className="text-lg text-on-surface-variant mb-6 leading-relaxed">
                                     {t.features.desc}
                                 </p>
@@ -343,9 +384,10 @@
                         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                             <div className="z-10">
                                 <span className="inline-block py-1 px-3 rounded-full bg-secondary-container text-on-secondary-container text-xs font-medium tracking-widest mb-6 uppercase">{t.services.tag}</span>
-                                <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tighter text-on-surface leading-[1.1] mb-8">
-                                    {t.services.title}
-                                </h1>
+                                // التعديل في صفحة الـ Services
+<h1 className="font-headline text-6xl md:text-8xl font-black tracking-tighter text-on-surface leading-[0.9] mb-8">
+    {t.services.title}
+</h1>
                                 <p className="text-on-surface-variant text-lg max-w-xl leading-relaxed">
                                     {t.services.desc}
                                 </p>
@@ -954,6 +996,118 @@ const ProductsPage = () => {
         </main>
     );
 };
+const BlogPage = () => {
+            const { t, lang } = useContext(LanguageContext);
+            
+            // بيانات الخامات بتتغير حسب اللغة
+            const materials = lang === 'ar' ? [
+                { name: '+PLA (المطور)', easy: '10/10', heat: '50°C', strength: 'صلب ومتين جداً', use: 'نماذج دقيقة وهدايا' },
+                { name: 'PETG', easy: '7/10', heat: '80°C', strength: 'مقاوم للصدمات والحرارة', use: 'أجزاء ميكانيكية' },
+                { name: 'TPU (المرن)', easy: '6/10', heat: '70°C', strength: 'مرونة عالية (زي الكاوتش)', use: 'جرابات وممتصات صدمات' },
+            ] : [
+                { name: 'PLA (Enhanced)+', easy: '10/10', heat: '50°C', strength: 'Very rigid & tough', use: 'Detailed models & gifts' },
+                { name: 'PETG', easy: '7/10', heat: '80°C', strength: 'Impact & heat resistant', use: 'Mechanical parts' },
+                { name: 'TPU (Flexible)', easy: '6/10', heat: '70°C', strength: 'High flexibility (Rubber-like)', use: 'Phone cases & dampers' },
+            ];
+
+            return (
+                <main className="pt-32 pb-20 px-8 max-w-7xl mx-auto" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+                    {/* الجزء العلوي - العنوان والوصف */}
+                    <div className="text-center mb-16">
+                        <span className="inline-block px-4 py-1 mb-4 rounded-full bg-[#00E5FF]/10 text-[#00E5FF] text-xs font-bold uppercase tracking-widest">
+                            {t.blog.tag}
+                        </span>
+                        <h1 className="text-5xl font-headline font-bold text-white mb-6 leading-tight">
+                            {t.blog.title}
+                        </h1>
+                        <p className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+                            {t.blog.desc}
+                        </p>
+                    </div>
+
+                    {/* سيكشن الـ FDM - إصلاح المحاذاة بجانب الصورة */}
+                    <section className="glass-panel p-8 md:p-12 rounded-2xl mb-12 border border-white/5 shadow-2xl bg-[#1a1a1a]">
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            <div className={`flex flex-col ${lang === 'en' ? 'text-left items-start' : 'text-right items-end'}`}>
+                                <h2 className="text-3xl font-headline font-bold mb-6 text-[#00E5FF]">
+                                    {t.blog.fdmTitle}
+                                </h2>
+                                <p className="text-zinc-400 leading-relaxed text-lg mb-8">
+                                    {t.blog.fdmDesc}
+                                </p>
+                                
+                                {/* أيقونات المميزات - إصلاح الاتجاه */}
+                                <div className={`flex gap-8 items-center w-full ${lang === 'en' ? 'flex-row' : 'flex-row-reverse'}`}>
+                                    <div className="flex items-center gap-2 text-[#00E5FF] font-bold font-headline text-sm">
+                                        <span className="material-symbols-outlined text-base">shutter_speed</span>
+                                        <span>{lang === 'en' ? 'High Speed' : 'سرعة في التنفيذ'}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-[#00E5FF] font-bold font-headline text-sm">
+                                        <span className="material-symbols-outlined text-base">precision_manufacturing</span>
+                                        <span>{lang === 'en' ? 'Precision' : 'دقة متناهية'}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg relative h-72 group order-first md:order-none">
+                                <img 
+                                    src="https://res.cloudinary.com/dmdxeg7co/image/upload/v1774194133/high-quality-fdm-3d-printing-services-for-all-industries-1000x1000_nzprs5.webp" 
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                    alt="FDM Printing Service"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                <div className="absolute bottom-4 left-0 right-0 text-center px-4">
+                                    <span className="text-[#00E5FF] font-headline text-[10px] font-black italic tracking-[0.2em] uppercase">
+                                        LayerCake 3D FDM Industrial Tech
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* سيكشن الجدول - إصلاح العناوين والاتجاه */}
+                    <section>
+                        <h2 className={`text-3xl font-headline font-bold mb-8 text-white ${lang === 'ar' ? 'border-r-4 pr-4 text-right' : 'border-l-4 pl-4 text-left'} border-[#00E5FF]`}>
+                            {t.blog.materialsTitle}
+                        </h2>
+                        <div className="overflow-x-auto rounded-xl border border-white/10 shadow-xl bg-[#1a1a1a]">
+                            <table className="w-full text-center border-collapse">
+                                <thead className="bg-[#131313] text-[#00E5FF] font-headline uppercase text-[10px] tracking-widest">
+                                    <tr>
+                                       <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
+            {lang === 'en' ? 'Material' : 'الخامة'}
+        </th>
+        <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
+            {lang === 'en' ? 'Ease of Printing' : 'سهولة الطباعة'}
+        </th>
+        <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
+            {lang === 'en' ? 'Heat Resistance' : 'تحمل الحرارة'}
+        </th>
+        <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
+            {lang === 'en' ? 'Strength' : 'القوة / المرونة'}
+        </th>
+        <th className="p-5 text-xl font-bold text-[#00E5FF] uppercase tracking-wider text-center">
+            {lang === 'en' ? 'Best Use' : 'أفضل استخدام'}
+        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-zinc-400">
+                                    {materials.map((m, idx) => (
+                                        <tr key={idx} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                            <td className="p-5 font-bold text-white">{m.name}</td>
+                                            <td className="p-5">{m.easy}</td>
+                                            <td className="p-5 text-[#00E5FF] font-medium">{m.heat}</td>
+                                            <td className="p-5">{m.strength}</td>
+                                            <td className="p-5 text-sm italic">{m.use}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
         const App = () => {
             const [lang, setLang] = useState('en');
             const t = translations[lang];
@@ -978,6 +1132,7 @@ const ProductsPage = () => {
                             <Route path="/" element={<HomePage />} />
                             <Route path="/calculator" element={<CalculatorPage />} />
                             <Route path="/products" element={<ProductsPage />} /> 
+<Route path="/blog" element={<BlogPage />} />
                             <Route path="/services" element={<ServicesPage />} />
                             <Route path="/portfolio" element={<PortfolioPage />} />
                             <Route path="/about" element={<AboutPage />} />
