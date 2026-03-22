@@ -810,6 +810,7 @@
 const ProductsPage = () => {
     const { t } = useContext(LanguageContext);
     
+    // 1. تعديل مسارات الصور لتكون محلية (جوة فولدر /images)
     const [products, setProducts] = React.useState([
         { id: 1, name: "Tsunami Headphone Stand", price: 540, image: "/images/tsunami-stand.webp" },
         { id: 2, name: "Controller Stand V3", price: 380, image: "/images/controller-v3.webp" },
