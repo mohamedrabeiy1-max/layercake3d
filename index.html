@@ -808,121 +808,152 @@
         };
 
 const ProductsPage = () => {
-            const { t } = useContext(LanguageContext);
-            const [products, setProducts] = React.useState([
-                { id: 1, name: "Tsunami Headphone Stand", price: 540, image: "https://i.postimg.cc/cJ6PVpTk/Tsunami-Headphone-Stand-(5).png" },
-                { id: 2, name: "Controller Stand V3", price: 380, image: "https://i.ibb.co/G4Vy1qVR/20241014-005119.png" },
-                { id: 3, name: "Controller Stand V2", price: 530, image: "https://i.ibb.co/7JnXkQ8C/20241029-101438.png" },
-                { id: 4, name: "Universal Controller Stand", price: 550, image: "https://i.ibb.co/Nd26bX15/20241104-101830.png" },
-                { id: 6, name: "Brachial Plexus Model", price: 1700, image: "https://i.ibb.co/Gv5ZHvy3/2.png" },
-                { id: 7, name: "Anatomical Spine Model", price: 1600, image: "https://i.ibb.co/XxDVkLFw/3.png" },
-                { id: 8, name: "Anatomical Hand Model", price: 500, image: "https://i.ibb.co/NgbNXHn0/4.png" },
-                { id: 12, name: "Book-Shaped Storage Box", price: 1300, image: "https://i.ibb.co/B5r3Gnw0/03.webp" },
-                { id: 13, name: "Bunny Chocolate Holder", price: 140, image: "https://i.ibb.co/SwjRCpZk/1a-3a-20260314-093308.webp" },
-                { id: 15, name: "Scrolling Room Sign", price: 45, image: "https://i.ibb.co/Zp97sHDC/1772643249453.webp" },
-                { id: 16, name: "Car Rim Keychain", price: 30, image: "https://i.ibb.co/v4dBnzxv/5298962107158174565.webp" },
-                { id: 17, name: "Pluto Dog Figure", price: 200, image: "https://i.ibb.co/k69pb4J7/IMG-4269.jpg" },
-                { id: 19, name: "Baby Mickey Mouse", price: 100, image: "https://i.ibb.co/sJ6KhfBy/2025-06-04-750b7254cba56.webp" },
-                { id: 20, name: "Donald Duck Figure", price: 220, image: "https://i.ibb.co/ycVtLQbw/IMG-4416.jpg" },
-                { id: 21, name: "Scrooge McDuck", price: 400, image: "https://i.ibb.co/RpYPkpC8/IMG-4416.jpg" },
-                { id: 26, name: "Wall Shelf", price: 630, image: "https://i.ibb.co/wNnQYCwm/downlo312312312311ad.jpg" },
-                { id: 27, name: "Incense Holder & Ashtray", price: 250, image: "https://i.ibb.co/7NChXL9D/Chat-GPT-Image-2026-ma-rc-15-08-25-33.png" },
-                { id: 28, name: "Spider-Man Figure", price: 660, image: "https://i.ibb.co/mVbxWf8J/20260316-012908.jpg" },
-                { id: 22, name: "Taz Figure", price: 750, image: "https://i.ibb.co/5gd7RyfS/20250707-124607.jpg" },
-                { id: 23, name: "Pillow Phone Stand", price: 900, image: "https://i.ibb.co/JRQH3Lnq/Pillow-Phone-Stand1.png" },
-                { id: 24, name: "Drill Dust Collector", price: 120, image: "https://i.ibb.co/bgcDBZn9/20241202-183345.png" },
-                { id: 25, name: "Racing Seat Phone Stand", price: 250, image: "https://i.ibb.co/qY8LxPq8/Support-tel-baquet-1.png" },
-                { id: 18, name: "Minnie Mouse Figure", price: 290, image: "https://i.ibb.co/0VXBTk1v/IMG-3655.jpg" },
-                { id: 14, name: "Pencil Holder", price: 330, images: ["https://i.ibb.co/JwZgsY7C/img-20260223-204748.webp","https://i.ibb.co/Cs46sMn7/game-over269.webp","https://i.ibb.co/JjGpMzGT/1.webp","https://i.ibb.co/zWLycXP4/Whisk-63ff86e7fb535b8b2f74a3e13eaf47e7dr.png"], currentImg: 0 }
-            ]);
+    const { t } = useContext(LanguageContext);
+    
+    // 1. تعديل مسارات الصور لتكون محلية (جوة فولدر public/images)
+    const [products, setProducts] = React.useState([
+        { id: 1, name: "Tsunami Headphone Stand", price: 540, image: "/images/tsunami-stand.webp" },
+        { id: 2, name: "Controller Stand V3", price: 380, image: "/images/controller-v3.webp" },
+        { id: 3, name: "Controller Stand V2", price: 530, image: "/images/controller-v2.webp" },
+        { id: 4, name: "Universal Controller Stand", price: 550, image: "/images/universal-stand.webp" },
+        { id: 6, name: "Brachial Plexus Model", price: 1700, image: "/images/brachial-plexus.webp" },
+        { id: 7, name: "Anatomical Spine Model", price: 1600, image: "/images/spine-model.webp" },
+        { id: 8, name: "Anatomical Hand Model", price: 500, image: "/images/hand-model.webp" },
+        { id: 12, name: "Book-Shaped Storage Box", price: 1300, image: "/images/book-box.webp" },
+        { id: 13, name: "Bunny Chocolate Holder", price: 140, image: "/images/bunny-holder.webp" },
+        { id: 15, name: "Scrolling Room Sign", price: 45, image: "/images/room-sign.webp" },
+        { id: 16, name: "Car Rim Keychain", price: 30, image: "/images/rim-keychain.webp" },
+        { id: 17, name: "Pluto Dog Figure", price: 200, image: "/images/pluto.webp" },
+        { id: 19, name: "Baby Mickey Mouse", price: 100, image: "/images/mickey.webp" },
+        { id: 20, name: "Donald Duck Figure", price: 220, image: "/images/donald.webp" },
+        { id: 21, name: "Scrooge McDuck", price: 400, image: "/images/scrooge.webp" },
+        { id: 26, name: "Wall Shelf", price: 630, image: "/images/wall-shelf.webp" },
+        { id: 27, name: "Incense Holder & Ashtray", price: 250, image: "/images/incense-holder.webp" },
+        { id: 28, name: "Spider-Man Figure", price: 660, image: "/images/spiderman.webp" },
+        { id: 22, name: "Taz Figure", price: 750, image: "/images/taz.webp" },
+        { id: 23, name: "Pillow Phone Stand", price: 900, image: "/images/pillow-stand.webp" },
+        { id: 24, name: "Drill Dust Collector", price: 120, image: "/images/dust-collector.webp" },
+        { id: 25, name: "Racing Seat Phone Stand", price: 250, image: "/images/racing-seat.webp" },
+        { id: 18, name: "Minnie Mouse Figure", price: 290, image: "/images/minnie.webp" },
+{ id: 30, name: "Anatomical Human Skull", price: 1600, image: "/images/skull.webp" },
+{ id: 31, name: "Anatomical Human Brain", price: 1700, image: "/images/brain.webp" },
+{ id: 32, name: "Customized Keychain", price: 50, image: "/images/keychain-customized.webp" },
 
-            const [searchTerm, setSearchTerm] = React.useState("");
-            const [selectedImg, setSelectedImg] = React.useState(null);
-            const [currentPage, setCurrentPage] = React.useState(1);
-            const productsPerPage = 12;
+        { 
+            id: 14, 
+            name: "Pencil Holder", 
+            price: 330, 
+            images: [
+                "/images/pencil-holder-1.webp",
+                "/images/pencil-holder-2.webp",
+                "/images/pencil-holder-3.webp"
+            ], 
+            currentImg: 0 
+        }
+    ]);
 
-            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
-            const indexOfLastProduct = currentPage * productsPerPage;
-            const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-            const currentProducts = searchTerm ? filteredProducts : filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+    const [searchTerm, setSearchTerm] = React.useState("");
+    const [selectedImg, setSelectedImg] = React.useState(null);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const productsPerPage = 12;
 
-            const changeImg = (productId, direction, e) => {
-                e.stopPropagation();
-                setProducts(prev => prev.map(p => {
-                    if (p.id === productId && p.images) {
-                        const nextIndex = (p.currentImg + direction + p.images.length) % p.images.length;
-                        return { ...p, currentImg: nextIndex };
-                    }
-                    return p;
-                }));
-            };
+    const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = searchTerm ? filteredProducts : filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-            return (
-                <main className="min-h-screen bg-black text-white p-6 md:p-12">
-                    {/* Header Section Compact - تم تقليل الارتفاع والمسافات */}
-                    <div className="relative h-[25vh] md:h-[30vh] flex flex-col items-center justify-center overflow-hidden mb-6">
-                        {/* الكلمة الخلفية */}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <h2 className="text-[10rem] md:text-[18rem] font-black italic text-white/[0.03] leading-none select-none">
-                                STORE
-                            </h2>
-                        </div>
-                        
-                        {/* العنوان والبحث */}
-                        <div className="relative z-10 text-center w-full">
-                            <h1 className="text-3xl md:text-4xl font-bold italic tracking-widest text-blue-500 mb-4">
-                                {t.store.title}
-                            </h1>
-                            <div className="relative group w-72 md:w-[450px] mx-auto">
-                                <input 
-                                    type="text" 
-                                    placeholder={t.store.search} 
-                                    className="w-full bg-zinc-900/80 border border-zinc-800 rounded-2xl py-3 px-6 outline-none focus:border-blue-500 transition-all text-base backdrop-blur-sm shadow-xl" 
-                                    value={searchTerm} 
-                                    onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} 
-                                />
-                            </div>
-                        </div>
+    const changeImg = (productId, direction, e) => {
+        e.stopPropagation();
+        setProducts(prev => prev.map(p => {
+            if (p.id === productId && p.images) {
+                const nextIndex = (p.currentImg + direction + p.images.length) % p.images.length;
+                return { ...p, currentImg: nextIndex };
+            }
+            return p;
+        }));
+    };
+
+    return (
+        <main className="min-h-screen bg-black text-white p-6 md:p-12">
+            {/* Header Section */}
+            <div className="relative h-[25vh] md:h-[30vh] flex flex-col items-center justify-center overflow-hidden mb-6">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <h2 className="text-[10rem] md:text-[18rem] font-black italic text-white/[0.03] leading-none select-none">
+                        STORE
+                    </h2>
+                </div>
+                
+                <div className="relative z-10 text-center w-full">
+                    <h1 className="text-3xl md:text-4xl font-bold italic tracking-widest text-blue-500 mb-4">
+                        {t.store.title}
+                    </h1>
+                    <div className="relative group w-72 md:w-[450px] mx-auto">
+                        <input 
+                            type="text" 
+                            placeholder={t.store.search} 
+                            className="w-full bg-zinc-900/80 border border-zinc-800 rounded-2xl py-3 px-6 outline-none focus:border-blue-500 transition-all text-base backdrop-blur-sm shadow-xl" 
+                            value={searchTerm} 
+                            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} 
+                        />
                     </div>
+                </div>
+            </div>
 
-                    {/* شبكة المنتجات */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-[1600px] mx-auto">
-                        {currentProducts.map(p => (
-                            <div key={p.id} className="bg-zinc-900/40 rounded-[2.5rem] p-5 border border-zinc-800/50 flex flex-col hover:border-blue-500/50 transition-all duration-300">
-                                <div className="relative aspect-square mb-5 overflow-hidden rounded-3xl bg-zinc-950 cursor-zoom-in group" onClick={() => setSelectedImg(p.images ? p.images[p.currentImg || 0] : p.image)}>
-                                    <img src={p.images ? p.images[p.currentImg || 0] : p.image} className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110" alt={p.name} />
-                                    {p.images && (
-                                        <div className="absolute inset-0 flex items-center justify-between px-3">
-                                            <button onClick={(e) => changeImg(p.id, -1, e)} className="w-10 h-10 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors">‹</button>
-                                            <button onClick={(e) => changeImg(p.id, 1, e)} className="w-10 h-10 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors">›</button>
-                                        </div>
-                                    )}
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-[1600px] mx-auto">
+                {currentProducts.map(p => (
+                    <div key={p.id} className="bg-zinc-900/40 rounded-[2.5rem] p-5 border border-zinc-800/50 flex flex-col hover:border-blue-500/50 transition-all duration-300">
+                        <div className="relative aspect-square mb-5 overflow-hidden rounded-3xl bg-zinc-950 cursor-zoom-in group" onClick={() => setSelectedImg(p.images ? p.images[p.currentImg || 0] : p.image)}>
+                            <img 
+                                src={p.images ? p.images[p.currentImg || 0] : p.image} 
+                                className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110" 
+                                alt={p.name} 
+                                loading="lazy" 
+                            />
+                            {p.images && (
+                                <div className="absolute inset-0 flex items-center justify-between px-3">
+                                    <button onClick={(e) => changeImg(p.id, -1, e)} className="w-10 h-10 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors">‹</button>
+                                    <button onClick={(e) => changeImg(p.id, 1, e)} className="w-10 h-10 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-2xl hover:bg-blue-600 transition-colors">›</button>
                                 </div>
-                                <h3 className="font-bold text-xl mb-1 px-2 truncate">{p.name}</h3>
-                                <p className="text-blue-400 font-black text-lg px-2 mb-6">{p.price} {t.calc.unit}</p>
-                                <button onClick={() => window.open(`https://wa.me/201050040993?text=Order: ${p.name}`, '_blank')} className="w-full py-4 bg-green-600 hover:bg-green-500 text-white rounded-2xl font-bold transition-all mt-auto flex items-center justify-center gap-2">{t.store.order}</button>
-                            </div>
-                        ))}
+                            )}
+                        </div>
+                        <h3 className="font-bold text-xl mb-1 px-2 truncate">{p.name}</h3>
+                        <p className="text-blue-400 font-black text-lg px-2 mb-6">{p.price} {t.calc.unit}</p>
+                        
+                        {/* 2. تحسين زرار الواتساب بـ Message Template */}
+                        <button 
+                            onClick={() => {
+                                const message = `Hello LayerCake! I'd like to order: *${p.name}*%0APrice: *${p.price} EGP*`;
+                                window.open(`https://wa.me/201050040993?text=${message}`, '_blank');
+                            }} 
+                            className="w-full py-4 bg-green-600 hover:bg-green-500 text-white rounded-2xl font-bold transition-all mt-auto flex items-center justify-center gap-2"
+                        >
+                            {t.store.order}
+                        </button>
                     </div>
+                ))}
+            </div>
 
-                    {!searchTerm && totalPages > 1 && (
-                        <div className="mt-16 flex justify-center items-center gap-4">
-                            <button onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo(0,0); }} disabled={currentPage === 1} className={`px-6 py-3 rounded-xl font-bold ${currentPage === 1 ? 'bg-zinc-800 text-zinc-600' : 'bg-white text-black hover:bg-blue-500 hover:text-white transition-colors'}`}>{t.store.prev}</button>
-                            <span className="text-zinc-500 font-bold">{t.store.page} {currentPage} {t.store.of} {totalPages}</span>
-                            <button onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo(0,0); }} disabled={currentPage === totalPages} className={`px-6 py-3 rounded-xl font-bold ${currentPage === totalPages ? 'bg-zinc-800 text-zinc-600' : 'bg-white text-black hover:bg-blue-500 hover:text-white transition-colors'}`}>{t.store.next}</button>
-                        </div>
-                    )}
-                    {selectedImg && (
-                        <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4" onClick={() => setSelectedImg(null)}>
-                            <span className="absolute top-10 right-10 text-white text-6xl cursor-pointer hover:text-red-500">×</span>
-                            <img src={selectedImg} className="max-w-[95%] max-h-[90vh] object-contain rounded-2xl shadow-2xl" alt="Zoomed" />
-                        </div>
-                    )}
-                    {filteredProducts.length === 0 && <div className="text-center py-40 text-zinc-700 text-2xl italic">{t.store.noMatches}</div>}
-                </main>
-            );
-        };
+            {/* Pagination & Modal */}
+            {!searchTerm && totalPages > 1 && (
+                <div className="mt-16 flex justify-center items-center gap-4">
+                    <button onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo(0,0); }} disabled={currentPage === 1} className={`px-6 py-3 rounded-xl font-bold ${currentPage === 1 ? 'bg-zinc-800 text-zinc-600' : 'bg-white text-black hover:bg-blue-500 hover:text-white transition-colors'}`}>{t.store.prev}</button>
+                    <span className="text-zinc-500 font-bold">{t.store.page} {currentPage} {t.store.of} {totalPages}</span>
+                    <button onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo(0,0); }} disabled={currentPage === totalPages} className={`px-6 py-3 rounded-xl font-bold ${currentPage === totalPages ? 'bg-zinc-800 text-zinc-600' : 'bg-white text-black hover:bg-blue-500 hover:text-white transition-colors'}`}>{t.store.next}</button>
+                </div>
+            )}
+            
+            {selectedImg && (
+                <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4" onClick={() => setSelectedImg(null)}>
+                    <span className="absolute top-10 right-10 text-white text-6xl cursor-pointer hover:text-red-500">×</span>
+                    <img src={selectedImg} className="max-w-[95%] max-h-[90vh] object-contain rounded-2xl shadow-2xl" alt="Zoomed" />
+                </div>
+            )}
+            {filteredProducts.length === 0 && <div className="text-center py-40 text-zinc-700 text-2xl italic">{t.store.noMatches}</div>}
+        </main>
+    );
+};
         const App = () => {
             const [lang, setLang] = useState('en');
             const t = translations[lang];
