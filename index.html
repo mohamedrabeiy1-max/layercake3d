@@ -121,7 +121,7 @@
 const translations = {
             en: {
                 nav: { home: 'Home', calculator: 'STL Calculator', products: 'Products', services: 'Services', portfolio: 'Portfolio', about: 'About Us', contact: 'Contact', quote: 'Request a Quote', blog: 'Blog' },
-                hero: { tag: 'Best Quality', title: '3d Printing', subtitle: 'Layers of Innovation.', desc: 'LayerCake 3D: Your partner in turning concepts into high-quality physical objects with engineered density and industrial accuracy.', ctaQuote: 'Get an Instant Quote', ctaPortfolio: 'View Portfolio' },
+                hero: { tag: 'Best Quality', title: '3d Printing', subtitle: 'Layers of Innovation.', desc: 'LayerCake 3D: Your partner in turning concepts into high-quality physical objects with engineered density and industrial accuracy.', ctaQuote: 'Upload Your Design', ctaPortfolio: 'Store' },
                 partners: 'WORKING FOR MAKE YOU HAPPY',
                 partnersList: ['SPEED', 'QUALITY', 'MODELING', 'DELIVERY'],
                 features: { title: 'Engineered for Precision. Built for Reliability.', desc: "At LayerCake 3D, we don't just print parts; we manufacture solutions. Our commitment to tectonic precision ensures that every layer contributes to the structural integrity and aesthetic excellence of your final product.", stat1: '500+', label1: 'Successful Projects', stat2: '12μm', label2: 'Layer Resolution', badgeTitle: '99.9% Accuracy', badgeDesc: 'Micron-level precision for aerospace and medical grade prototypes.' },
@@ -320,7 +320,7 @@ const translations = {
                                         {t.hero.ctaQuote}
                                         <span className={`material-symbols-outlined group-hover:translate-x-1 transition-transform ${lang === 'ar' ? 'rotate-180' : ''}`}>arrow_forward</span>
                                     </button>
-                                    <button onClick={() => navigate('/portfolio')} className="px-8 py-4 bg-surface-container-high text-primary rounded-lg font-bold text-lg hover:bg-surface-container-highest transition-all">
+                                    <button onClick={() => navigate('/products')} className="px-8 py-4 bg-surface-container-high text-primary rounded-lg font-bold text-lg hover:bg-surface-container-highest transition-all">
                                         {t.hero.ctaPortfolio}
                                     </button>
                                 </div>
