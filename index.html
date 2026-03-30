@@ -389,7 +389,6 @@
             );
         };
 
-        // --- صفحة اتصل بنا بعد التعديل لتعمل مع EmailJS ---
         const ContactPage = () => {
             const { t } = useContext(LanguageContext);
             const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -400,29 +399,26 @@
                 e.preventDefault();
                 setLoading(true);
 
-                // البيانات اللي هتوصلك في الإيميل
                 const templateParams = {
                     from_name: formData.name,
                     from_email: formData.email,
                     message: formData.message,
-                    to_name: "محمد - LayerCake 3D Admin"
+                    to_name: "LayerCake 3D Admin"
                 };
 
-                // تأكد من وضع الأكواد الخاصة بك هنا
+                // استبدل الـ IDs هنا بما تملك من موقع EmailJS
                 emailjs.send(
-                    'YOUR_SERVICE_ID',    // استبدله بـ Service ID من EmailJS
-                    'YOUR_TEMPLATE_ID',   // استبدله بـ Template ID من EmailJS
+                    'YOUR_SERVICE_ID', 
+                    'YOUR_TEMPLATE_ID', 
                     templateParams,
-                    'm99S7PZ9WNo4YmC81'      // هذا هو الـ Public Key الخاص بك
+                    'm99S7PZ9WNo4YmC81'
                 )
                 .then((result) => {
                     setSubmitted(true);
                     setLoading(false);
-                    console.log('Success:', result.text);
                 }, (error) => {
-                    alert("للأسف حصلت مشكلة، اتأكد إن الـ IDs صح وجرب تاني");
+                    alert("Error sending message. Please check IDs.");
                     setLoading(false);
-                    console.log('Error:', error.text);
                 });
             };
 
@@ -430,7 +426,7 @@
                 return (
                     <div className="pt-40 pb-20 text-center container mx-auto px-8">
                         <div className="max-w-md mx-auto bg-surface-container p-12 rounded-2xl border border-primary/20">
-                            <span className="material-symbols-outlined text-primary text-[64px] mb-6">check_circle</span>
+                            <span className="material-symbols-outlined text-primary text-64px mb-6">check_circle</span>
                             <h2 className="text-3xl font-headline font-bold mb-4">{t.contact.success}</h2>
                             <p className="text-on-surface-variant mb-8">{t.contact.successDesc}</p>
                             <button onClick={() => setSubmitted(false)} className="text-primary font-bold hover:underline">
